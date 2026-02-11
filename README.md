@@ -29,14 +29,14 @@
 
 1. Clone the repository and navigate to the root directory:
 
-```
+```bash
 git clone https://github.com/Araachie/comit.git
 cd comit
 ```
 
 2. Create a new conda environment and install all the dependencies:
 
-```
+```bash
 conda create -n comit python==3.11 -y
 conda activate comit
 pip install -e .
@@ -44,7 +44,7 @@ pip install -e .
 
 3. [Optional] To enable jupyter instead of the last command, run:
 
-```
+```bash
 pip install -e ".[notebook]"
 python -m ipykernel install --user --name comit --display-name "Python (comit)"
 ```
@@ -99,7 +99,7 @@ For convenience, we have prepared a demo Jupyter notebook at `./notebooks/demo.i
 
 Example usage, downloading `COMiT-XL` from the Hugging Face Hub:
 
-```
+```python
 from comit import COMiT
 
 model = COMiT.from_pretrained('cvg-unibe/comit-xl')
@@ -108,7 +108,7 @@ model.eval().to(device)
 
 With a pretrained COMiT model images can be encoded into token sequences as follows:
 
-```
+```python
 with torch.no_grad():
   token_dict = model.tokenize(
       batch,
@@ -120,13 +120,13 @@ with torch.no_grad():
 
 By default the tokenization pipeline returns a list of 256 6-dimensional tokens. If token indices are needed instead, they can be obtained via:
 
-```
+```python
 token_ids = model.quantizer.codes_to_indices(token_dict["msgs"])
 ```
 
 To visually probe the information in the token sequences, one can decode the tokens back into images:
 
-```
+```python
 with torch.no_grad():
   detoken_dict = model.detokenize(
       msgs=token_dict["msgs"],
@@ -139,7 +139,7 @@ with torch.no_grad():
 
 For convenience we also provide the `reconstruct` method that pipelines `tokenize` and `detokenize` into a single call:
 
-```
+```python
 with torch.no_grad():
   rec_dict = model.reconstruct(
       batch,
@@ -152,11 +152,17 @@ with torch.no_grad():
   )
 ```
 
+## Licensing
+
+Unless otherwise noted, the code in this repository is licensed under LICENSE.
+This repository includes third-party components under different licenses, including for non-commercial use only,
+see THIRD_PARTY_NOTICES.md. The overall project is intended for research and academic use.
+
 ## Citation
 
 If you find this repository helpful, please consider citing our work:
 
-```
+```bibtex
 @misc{
   davtyan2026comit,
   title={Communication-Inspired Tokenization for Structured Image Representations},

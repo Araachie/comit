@@ -1,3 +1,6 @@
+# Sadat et al., Eliminating Oversaturation and Artifacts of High Guidance Scales in Diffusion Models
+# Adapted from: https://arxiv.org/abs/2410.02416 (Appendix D)
+
 import torch
 
 

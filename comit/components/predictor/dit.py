@@ -1,3 +1,8 @@
+# This code is based on software originally developed by Meta / Facebook Research.
+# Modified from https://github.com/facebookresearch/DiT/blob/main/models.py
+# Changes: refactoring, integration into COMiT pipeline, change to RuledDiT
+# architecture to support message tokens and conditioning on offsets
+
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # All rights reserved.
 

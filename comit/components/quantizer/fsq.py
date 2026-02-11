@@ -1,4 +1,8 @@
-# For licensing see accompanying LICENSE file.
+# This code is based on software originally developed by EPFL and Apple Inc.
+# Modified from https://github.com/apple/ml-flextok/blob/main/flextok/regularizers/quantize_fsq.py
+# Changes: refactoring, integration into COMiT pipeline
+
+# For licensing see accompanying LICENSE_EPFL_APPLE file.
 # Copyright (C) 2025 Apple Inc. and EPFL. All Rights Reserved.
 # --------------------------------------------------------
 # Adapted from:
