@@ -1,159 +1,515 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <meta name="description"
-        content="COMiT,  a new way to represent images as discrete sequences of tokens by sequentially integrating information from image crops, yielding semantically meaningful structured representations.">
-  <meta name="keywords" content="LOOM-CFM, Generative Models, Flow Matching">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+        content="COMiT represents images as discrete sequences of tokens by sequentially integrating information from image crops, yielding semantically meaningful structured representations." />
+  <meta name="keywords"
+        content="Discrete image representations, image tokenization, flow-matching, autoencoders, transformers" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Communication-Inspired Tokenization for Structured Image Representations</title>
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- Bulma + vendor -->
+  <link rel="stylesheet" href="./static/css/bulma.min.css" />
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css" />
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css" />
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
 
+  <!-- Your stylesheet -->
+  <link rel="stylesheet" href="./static/css/index.css" />
+
+  <!-- Minimal page polish (kept inline so you don’t need new files) -->
+  <style>
+    :root{
+      --page-max: 980px;
+      --text-max: 900px;
+      --radius: 14px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .container.is-max-desktop { max-width: var(--page-max); }
+    .prose { max-width: 100%; margin-inline: auto; }
+    .section-title { margin-bottom: 1rem; }
+    .subtle { color: rgba(0,0,0,0.68); }
+    .cardish {
+      border-radius: var(--radius);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+      background: white;
+      overflow: hidden;
+    }
+    .figure {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: none;
+      background: #fff;
+    }
+    .figure img { display:block; width: 100%; height:auto; }
+    .sticky-nav {
+      position: sticky; top: 0; z-index: 40;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.92);
+    }
+    .hero-compact .hero-body { padding-top: 2.5rem; padding-bottom: 1.75rem; }
+    .lead { font-size: 1.1rem; line-height: 1.65; }
+    .tagline { margin-top: 1rem; }
+    .tagline-strong {
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 1.5rem auto 0 auto;
+      color: #222;
+    }
+    .button.is-rounded { border-radius: 999px; }
+    .toc a.navbar-item { font-size: 0.95rem; }
+    .anchor-offset { scroll-margin-top: 84px; } /* avoids sticky navbar overlap */
+    .callout {
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .tight-list li { margin-bottom: 0.35rem; }
+    .authors { line-height: 1.6; }
+    .authors a { white-space: nowrap; }
+  </style>
+
+  <!-- Scripts -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
 </head>
+
 <body>
 
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://araachie.github.io">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
+  <!-- Sticky top navigation -->
+  <nav class="navbar sticky-nav" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://araachie.github.io" aria-label="Home">
+        <span class="icon"><i class="fas fa-home"></i></span>
       </a>
 
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="topNav">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
     </div>
 
-  </div>
-</nav>
+    <div id="topNav" class="navbar-menu toc">
+      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="#overview">Overview</a>
+        <a class="navbar-item" href="#abstract">Abstract</a>
+        <a class="navbar-item" href="#motivation">Motivation</a>
+        <a class="navbar-item" href="#method">Method</a>
+        <a class="navbar-item" href="#experiments">Experiments</a>
+        <a class="navbar-item" href="#references">References</a>
+      </div>
 
-<section class="hero">
-  <div class="hero-body">
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a href="https://arxiv.org/" class="button is-dark is-rounded is-small">
+              <span class="icon"><i class="fas fa-file-pdf"></i></span>
+              <span>Paper</span>
+            </a>
+            <a href="https://github.com/araachie/comit" class="button is-light is-rounded is-small">
+              <span class="icon"><i class="fab fa-github"></i></span>
+              <span>Code</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero hero-compact" id="overview">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+
+            <h1 class="title is-2 publication-title">
+              Communication-Inspired Tokenization for Structured Image Representations
+            </h1>
+
+            <div class="authors is-size-5">
+              <span class="author-block">
+                <a href="https://araachie.github.io">Aram Davtyan</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://www.cvg.unibe.ch/people/sahin">Yusuf Sahin</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.epfl.ch/yasaman.haghighi?lang=en">Yasaman Haghighi</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://www.cvg.unibe.ch/people/stapf">Sebastian Stapf</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://www.cvg.unibe.ch/people/acuaviva">Pablo Acuaviva</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://people.epfl.ch/alexandre.alahi?lang=en">Alexandre Alahi</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://cvg.unibe.ch/people/favaro">Paolo Favaro</a><sup>1</sup>
+              </span>
+            </div>
+
+            <p class="subtle is-size-6" style="margin-top: 0.5rem;">
+              <sup>1</sup>Computer Vision Group, Institute of Informatics, University of Bern ·
+              <sup>2</sup>VITA lab, EPFL
+            </p>
+
+            <div class="buttons is-centered" style="margin-top: 1.25rem;">
+              <a href="https://arxiv.org/" class="button is-dark is-rounded">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Paper</span>
+              </a>
+              <a href="https://github.com/araachie/comit" class="button is-light is-rounded">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEASER + CAROUSEL -->
+  <section class="section anchor-offset">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Communication-Inspired Tokenization for Structured Image Representations</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://araachie.github.io">Aram Davtyan</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://www.cvg.unibe.ch/people/sahin">Yusuf Sahin</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://people.epfl.ch/yasaman.haghighi?lang=en">Yasaman Haghighi</a><sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://www.cvg.unibe.ch/people/stapf">Sebastian Stapf</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://www.cvg.unibe.ch/people/acuaviva">Pablo Acuaviva</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://people.epfl.ch/alexandre.alahi?lang=en">Alexandre Alahi</a><sup>2</sup>,</span>  
-            <span class="author-block">
-              <a href="http://cvg.unibe.ch/people/favaro">Paolo Favaro</a><sup>1</sup>
-            </span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>Computer Vision Group, Institute of Informatics, University of Bern, Bern, Switzerland</span>
-            <span class="author-block"><sup>2</sup>VITA lab, EPFL, Lausanne, Switzerland</span>
-          </div>
-
-          <div class="is-size-5">
-            <h2 class="subtitle has-text-centered">
-              <b></b>
-            </h2>
-          </div>
-          
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/araachie/comit"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-        
+        <div class="column is-12">
+          <div class="cardish" style="padding: 1.25rem;">
+            <div class="prose">
+              <h2 class="title is-4 section-title">Overview</h2>
+              <p class="subtle">
+                COMiT represents images as discrete token sequences by sequentially 
+                integrating information from crops, yielding semantically meaningful, structured visual representations.
+                A flow-matching decoder enables one-step reconstructions that reveal progressively reduced ambiguity
+                as more crops are integrated.
+              </p>
             </div>
+
+            <div style="margin-top: 1rem;">
+              <div id="results-carousel" class="carousel results-carousel">
+                <div class="item">
+                  <div class="figure">
+                    <img src="./static/images/vis1.jpg" alt="COMiT visualization 1" />
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="figure">
+                    <img src="./static/images/vis3.jpg" alt="COMiT visualization 2" />
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="figure">
+                    <img src="./static/images/vis2.jpg" alt="COMiT visualization 3" />
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="figure">
+                    <img src="./static/images/vis4.jpg" alt="COMiT visualization 4" />
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="figure">
+                    <img src="./static/images/vis5.jpg" alt="COMiT visualization 5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prose" style="margin-top: 1rem;">
+              <div class="callout">
+                <p class="subtle" style="margin: 0;">
+                  <b>Key idea:</b> At test time, COMiT supports flexible crop order and size, enabling adaptive,
+                  task-dependent tokenization.
+                </p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Discrete image tokenizers have emerged as a key component of modern vision and multimodal systems, providing a sequential interface for transformer-based architectures. However, most existing approaches remain primarily optimized for reconstruction and compression, often yielding tokens that capture local texture rather than object-level semantic structure.
-          </p>
-          <p>
-            Inspired by the incremental and compositional nature of human communication, we introduce COMmunication inspired Tokenization (<span class="dnerf">COMiT</span>), a novel framework for learning structured discrete visual token sequences. <span class="dnerf">COMiT</span>  constructs a latent message within a fixed token budget by iteratively observing localized image crops and recurrently updating its discrete representation. At each step, the model integrates new visual information while refining and reorganizing the existing token sequence. After several encoding iterations, the final message conditions a flow-matching decoder that reconstructs the full image. Both encoding and decoding are implemented within a single transformer model and trained end-to-end using a combination of flow-matching reconstruction and semantic representation alignment losses.
-          </p>
-          <p>
-            Our experiments demonstrate that while semantic alignment provides grounding, the proposed attentive sequential tokenization is critical for inducing interpretable, object-centric token structure and substantially improving compositional generalization and relational reasoning over prior methods.
-          </p>
+  <!-- ABSTRACT -->
+  <section class="section hero is-light anchor-offset" id="abstract">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified prose">
+              <p>
+                Discrete image tokenizers have emerged as a key component of modern vision and multimodal systems,
+                providing a sequential interface for transformer-based architectures. However, most existing approaches
+                remain primarily optimized for reconstruction and compression, often yielding tokens that capture local
+                texture rather than object-level semantic structure.
+              </p>
+              <p>
+                Inspired by the incremental and compositional nature of human communication, we introduce
+                <b>COMmunication inspired Tokenization (COMiT)</b>, a framework for learning structured discrete visual
+                token sequences. COMiT constructs a latent message within a fixed token budget by iteratively observing
+                localized image crops and recurrently updating its discrete representation. At each step, the model
+                integrates new visual information while refining and reorganizing the existing token sequence. After
+                several encoding iterations, the final message conditions a flow-matching decoder that reconstructs the
+                full image. Both encoding and decoding are implemented within a single transformer model and trained
+                end-to-end using a combination of flow-matching reconstruction and semantic representation alignment
+                losses.
+              </p>
+              <p>
+                Our experiments demonstrate that while semantic alignment provides grounding, attentive sequential
+                tokenization is critical for inducing interpretable, object-centric token structure and substantially
+                improving compositional generalization and relational reasoning over prior methods.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <!--/ Abstract. -->
-  </div>
-</section>
+  </section>
 
+  <!-- MOTIVATION -->
+  <section class="section anchor-offset" id="motivation">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">Motivation</h2>
 
-<footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content has-text-centered">
-          <p>
-            Website template borrowed from the <a
-              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> project page. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
+            <div class="prose">
+              <p>
+                Modern multimodal systems convert images into discrete token sequences consumed by transformer-based
+                architectures. This interface enables scalable training, compression, and unified reasoning over visual
+                and textual inputs, making image tokenization a central problem in representation learning.
+              </p>
+
+              <p>
+                While recent work has renewed interest in <b>1D discrete bottlenecks</b>, many approaches still optimize
+                for compression-reconstruction trade-offs. Tokens often entangle semantics and fail to localize objects,
+                limiting downstream performance on compositional and relational tasks.
+              </p>
+
+              <div class="callout" style="margin: 1rem 0;">
+                <p style="margin: 0;">
+                  We shift focus from <b>compression</b> to <b>semantic organization</b> of token sequences.
+                  Alignment losses help, but structure also requires an encoding process that encourages compositionality.
+                </p>
+              </div>
+            </div>
+
+            <div class="columns is-centered" style="margin-top: 1rem;">
+              <div class="column is-8">
+                <div class="figure">
+                  <img src="./static/images/communication.jpeg" alt="Communication-inspired motivation figure" />
+                </div>
+              </div>
+            </div>
+
+            <div class="prose">
+              <p>
+                Our approach is inspired by how humans describe visual scenes under limited bandwidth: attention moves
+                region-by-region, integrating salient information into a message and reducing uncertainty
+                progressively. This naturally prioritizes high-level entities and relations over fine detail, creating a
+                coarse-to-fine hierarchy.
+              </p>
+              <p>
+                COMiT follows this intuition via <b>attentive sequential tokenization</b> and <b>homogeneous communication</b>
+                within a single model that both encodes and decodes.
+              </p>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
+
+  <!-- METHOD -->
+  <section class="section anchor-offset" id="method">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">Communication-Inspired Tokenization</h2>
+
+            <div class="figure" style="margin-top: 0.75rem;">
+              <img src="./static/images/method.jpg" alt="COMiT method overview diagram" />
+            </div>
+
+            <div class="prose" style="margin-top: 1rem;">
+              <p class="subtle">
+                A sequence of random crops is extracted and iteratively embedded into a latent message discretized via
+                FSQ&nbsp;[1]. The same transformer decodes the message using a flow-matching objective&nbsp;[2]. We use
+                REPA&nbsp;[3] to speed up training and SREPA to inject stronger semantic priors (see the paper for formal definitions).
+              </p>
+
+              <h3 class="title is-5" style="margin-top: 1.25rem;">Training details (high level)</h3>
+              <ul class="tight-list">
+                <li>
+                  With some probability, replace the first crop with the full image so the model can encode in one step.
+                </li>
+                <li>
+                  Randomize number of crops so tokens are used greedily under a fixed budget.
+                </li>
+                <li>
+                  For efficiency, backpropagate gradients only through the last message update step.
+                </li>
+                <li>
+                  Enable classifier-free guidance by dedicating part of training to unconditional decoding.
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIMENTS -->
+  <section class="section anchor-offset" id="experiments">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">Experiments</h2>
+
+            <div class="columns is-vcentered">
+              <div class="column">
+                <div class="prose">
+                  <p>
+                    We analyze token attention maps using a test set with ground-truth saliency. For each token, we
+                    binarize its attention map by keeping the top <i>Q</i>% values, then select the token with the highest
+                    IoU to the ground-truth mask.
+                  </p>
+                  <div class="callout">
+                    <p style="margin: 0;">
+                      <b>Outcome:</b> Full COMiT yields object-aligned attention (mean mIoU 0.53) versus an ablation
+                      without local crops (0.34), indicating the <b>attentive tokenization pipeline</b> is key for structure.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="figure">
+                  <img src="./static/images/local_crops_attn.jpg" alt="Token attention map comparison" />
+                </div>
+              </div>
+            </div>
+
+            <div class="prose" style="margin-top: 1.25rem;">
+              <p>
+                We evaluate COMiT against baseline 1D tokenizers on three benchmarks (see Section 4 in the paper).
+                COMiT improves semantic probing, highlighting a <b>representation–reconstruction</b> trade-off that differs
+                from the classical compression objective.
+              </p>
+            </div>
+
+            <div class="figure" style="margin-top: 0.75rem;">
+              <img src="./static/images/table.png" alt="Benchmark results table" />
+            </div>
+
+            <div class="prose" style="margin-top: 1.25rem;">
+              <p>
+                One-step decoding provides a way to probe uncertainty: recently observed regions are sharper, while
+                unobserved regions remain blurry. As more crops are aggregated, the latent message becomes more refined. This process is inherently compositional: objects appear as soon as they are observed.
+              </p>
+            </div>
+
+            <div class="figure" style="margin-top: 0.75rem;">
+              <img src="./static/images/comp.jpg" alt="Compositional reconstruction over crop sequence" />
+            </div>
+
+            <div class="prose" style="margin-top: 1.25rem;">
+              <p class="subtle">
+                For full details, ablations, and additional results, please refer to the paper.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section class="section anchor-offset" id="references">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">References</h2>
+
+            <div class="prose">
+              <ol class="tight-list">
+                <li>
+                  Mentzer, Fabian, et al. <i>Finite Scalar Quantization: VQ-VAE Made Simple.</i> ICLR.
+                </li>
+                <li>
+                  Lipman, Yaron, et al. <i>Flow Matching for Generative Modeling.</i> ICLR.
+                </li>
+                <li>
+                  Yu, Sihyun, et al. <i>Representation Alignment for Generation: Training Diffusion Transformers Is Easier Than You Think.</i> ICLR.
+                </li>
+              </ol>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          Website template borrowed from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> project page.
+          <br />
+          This website is licensed under a
+          <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+            Creative Commons Attribution-ShareAlike 4.0 International License
+          </a>.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Small JS helper for Bulma burger (works even if your index.js already does it) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      burgers.forEach(el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+          el.classList.toggle('is-active');
+          if ($target) $target.classList.toggle('is-active');
+        });
+      });
+    });
+  </script>
 
 </body>
 </html>
