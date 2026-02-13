@@ -348,7 +348,7 @@ class COMiTBase(nn.Module):
         elif order == "adaptive":
             global_crops = batch
             # Start with center crop if global_crop else start with empty
-            crops = [([0] * global_crops.size(0) if global_crop else [5] * global_crops.size(0))]
+            crops = [([0] * global_crops.size(0) if global_crop else [4] * global_crops.size(0))]
             forbidden_mask = torch.zeros((1, 3, 3), device=global_crops.device)
             if not global_crop:
                 forbidden_mask[0, 1, 1] = 1  # Center crop is already given
@@ -376,13 +376,16 @@ class COMiTBase(nn.Module):
                         torch.tensor(float("-inf"), device=global_crops.device),
                         scores,
                     )
-                    next_crops = torch.argmax(scores.view(global_crops.size(0), -1), dim=1) + 1  # [b]
-                    crops.append(next_crops.tolist())
+                    next_crops = torch.argmax(scores.view(global_crops.size(0), -1), dim=1)  # [b]
                     forbidden_mask[
                         torch.arange(global_crops.size(0)),
-                        (next_crops.to(global_crops.device) - 1) // 3,
-                        (next_crops.to(global_crops.device) - 1) % 3,
+                        next_crops.to(global_crops.device) // 3,
+                        next_crops.to(global_crops.device) % 3,
                     ] = 1
+                    if global_crop:
+                        next_crops += 1
+                    crops.append(next_crops.tolist())
+                    
 
             return_dict = self.prepare_crops(
                 batch=global_crops,
