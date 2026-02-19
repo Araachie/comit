@@ -187,16 +187,16 @@ class COMiTBase(nn.Module):
         :type local_crops: list[Tensor]
         :param local_locations: A list containing the locations of the crops of shape [b 2] each
         :type local_locations: list[Tensor]
-        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global 
+        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global
         crop
         :type global_crop: bool
         :param order: One of ["raster_scan", "random", "adaptive"] or an explicit list of crop indices. If a list is
         provided, it should be either a list of indices (the same for all images in the batch) or a list of lists,
-        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global 
-        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order. 
+        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global
+        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order.
         Otherwise, the local crops have indices from 0 to 8 in the raster scan order.
         :type order: str | list[int] | list[list[int]]
-        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used. 
+        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used.
         Applied after reordering.
         :type num_crops: int | None
         :return: The updated lists of local crops and their respecitve locations, and the explicit order as a list of
@@ -257,16 +257,16 @@ class COMiTBase(nn.Module):
         :param batch: Input batch of images or a dict containing previously extracted crops to filter (with keys
         "global_crops", "global_locations", "local_crops", "local_locations")
         :type batch: dict[str, Any] | Tensor
-        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global 
+        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global
         crop
         :type global_crop: bool
         :param order: One of ["raster_scan", "random", "adaptive"] or an explicit list of crop indices. If a list is
         provided, it should be either a list of indices (the same for all images in the batch) or a list of lists,
-        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global 
-        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order. 
+        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global
+        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order.
         Otherwise, the local crops have indices from 0 to 8 in the raster scan order.
         :type order: str | list[int] | list[list[int]]
-        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used). 
+        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used).
         Applied after reordering.
         :type num_crops: int | None
         :param return_reconstructions: Whether to return one-step reconstructions with sequentially updated messages
@@ -405,7 +405,6 @@ class COMiTBase(nn.Module):
                     if global_crop:
                         next_crops += 1
                     crops.append(next_crops.tolist())
-                    
 
             return_dict = self.prepare_crops(
                 batch=global_crops,
@@ -438,16 +437,16 @@ class COMiTBase(nn.Module):
         :param batch: Input batch of images of shape [b c h w] or a dict containing previously extracted crops to
         filter (with keys "global_crops", "global_locations", "local_crops", "local_locations")
         :type batch: Tensor | dict[str, Tensor]
-        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global 
+        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global
         crop
         :type global_crop: bool
         :param order: One of ["raster_scan", "random", "adaptive"] or an explicit list of crop indices. If a list is
         provided, it should be either a list of indices (the same for all images in the batch) or a list of lists,
-        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global 
-        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order. 
+        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global
+        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order.
         Otherwise, the local crops have indices from 0 to 8 in the raster scan order.
         :type order: str | list[int] | list[list[int]]
-        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used). 
+        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used).
         Applied after reordering.
         :type num_crops: int | None
         :return: A dict containing the latent messages of shape [b n d] and the offsets to use for decoding, tensor of
@@ -631,16 +630,16 @@ class COMiTBase(nn.Module):
         :param batch: Input batch of images of shape [b c h w] or a dict containing previously extracted crops to
         filter (with keys "global_crops", "global_locations", "local_crops", "local_locations")
         :type batch: Tensor | dict[str, Tensor]
-        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global 
+        :param global_crop: Whether the first crop in the extracted sequence (before reordering) should be the global
         crop
         :type global_crop: bool
         :param order: One of ["raster_scan", "random", "adaptive"] or an explicit list of crop indices. If a list is
         provided, it should be either a list of indices (the same for all images in the batch) or a list of lists,
-        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global 
-        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order. 
+        where the [i, j] element corresponds to the index of the ith crop for the jth image in the batch. If global
+        crop is required its index is 0 and the local crops have indices from 1 to 9 in the raster scan order.
         Otherwise, the local crops have indices from 0 to 8 in the raster scan order.
         :type order: str | list[int] | list[list[int]]
-        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used). 
+        :param num_crops: The number of crops to truncate the list of crops to (including the global crop if used).
         Applied after reordering.
         :param num_steps: Number of ODE discretization steps
         :type num_steps: int
