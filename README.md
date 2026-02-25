@@ -14,7 +14,7 @@
   </p>
 <h4 align="center">Official repository of the paper</h4>
 
-<h4 align="center"><a href="https://araachie.github.io/comit/">Website</a> • <a href="https://arxiv.org">Paper</a>
+<h4 align="center"><a href="https://araachie.github.io/comit/">Website</a> • <a href="https://arxiv.org/abs/2602.20731">Paper</a>
 
 <p float="left">
   <img src="assets/teaser.jpg" width="100%">
@@ -163,11 +163,13 @@ see THIRD_PARTY_NOTICES.md. The overall project is intended for research and aca
 If you find this repository helpful, please consider citing our work:
 
 ```bibtex
-@misc{
-  davtyan2026comit,
-  title={Communication-Inspired Tokenization for Structured Image Representations},
-  author={Aram Davtyan and Yusuf Sahin and Yasaman Haghighi and Sebastian Stapf and 
-    Pablo Acuaviva and Alexandre Alahi and Paolo Favaro},
-  year={2026},
+@misc{davtyan2026comit,
+      title={Communication-Inspired Tokenization for Structured Image Representations}, 
+      author={Aram Davtyan and Yusuf Sahin and Yasaman Haghighi and Sebastian Stapf and Pablo Acuaviva and Alexandre Alahi and Paolo Favaro},
+      year={2026},
+      eprint={2602.20731},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2602.20731}, 
 }
 ```
